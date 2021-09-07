@@ -10,6 +10,7 @@ import MovieList from './TrendingMovies/MovieList';
 const Home = () => {
   const title = 'Top Movies';
   const [listTrending, setListTrending] = useState([]);
+  const [listBySearchTrending, setListBySearchTrending] = useState([]);
   const [completMovieList, setCompleteMovieList] = useState([]);
   const [genreList, setGenreList] = useState([]);
 
@@ -19,13 +20,19 @@ const Home = () => {
   const triggerSearch = () => {
     if(search == false)
       setSearch(true);
-    else if(search == true)
+    else if(search == true){
+      getFilmsTrending();
       setSearch(false);
+    }
+      
   }
 
   const getMovieSearch = async () => {
-    if(text){
-      const response = await getSearch(text);
+    const searchText = text;
+    if(searchText){
+      const response = await getSearch(searchText);
+      setListTrending([]);
+      setListTrending(response.data.results);
     }
     
   }
@@ -57,11 +64,13 @@ const Home = () => {
       </View>
     );
   };
+
   const renderSearch = () => {
     return (
       <>
       <View style={Styles.HeaderView}>
       <Text style={Styles.titleText}>Search</Text>
+      <Icon.Button name="check" backgroundColor="transparent" onPress={() => getMovieSearch()}></Icon.Button>
       <Icon.Button name="times" backgroundColor="transparent" onPress={() => triggerSearch()}></Icon.Button>
       </View>
       <TextInput
@@ -74,8 +83,15 @@ const Home = () => {
     )
   }
 
-  const renderList = () => {
-    return (<MovieList list={listTrending} trending={trend}/>)
+  const renderList = (list) => {
+    return (<MovieList list={list} trending={trend}/>)
+  }
+  const renderSearchList = () => {
+    return ( <FlatList
+      data={listBySearchTrending}
+      keyExtractor={(item, index) => `${item}_${index}`}
+      renderItem={({item, index}) => <Text style={Styles.titleText}>{item.name}</Text>}
+    />)
   }
 
   useEffect(() => {
@@ -92,17 +108,21 @@ const Home = () => {
       trend["genres"] = genres.join(" / ");
     });
   }, [listTrending])
-  
+
+  const renderPage = () => {
+    return (
+      <Container>
+        {search == false ? renderHeader() : renderSearch()}
+        {listTrending ? renderList(listTrending) : <ActivityIndicator size="large" color="#007CFF" />}
+        {!listTrending ? renderSearchList() : null}
+      </Container>
+    )
+  }
   useEffect(() => {
-    getMovieSearch();
+      renderPage();
   })
-  
   return (
-    <Container>
-      {search == false ? renderHeader() : renderSearch()}
-      {listTrending ? renderList() : <ActivityIndicator size="large" color="#007CFF" />}
-      
-    </Container>
+    renderPage()
   );
 };
 

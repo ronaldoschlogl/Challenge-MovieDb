@@ -18,6 +18,6 @@ export const getGenres = () => {
 }
 
 export const getSearch = (query) => {
-    const url = `search/company?${apiKey}&query=${query}`;
+    const url = `search/movie?${apiKey}&query=${query}`;
     return api.get(url);
 }
