@@ -7,7 +7,7 @@ import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const MovieItem = (props) => {
-    const {navigation, item, index, list} = props;
+    const {navigation, item, index, list, trending} = props;
     const uri = `https://image.tmdb.org/t/p/w342/${item.poster_path}`;
     let star = Math.floor(item.vote_average / 2);
     let id = item.id;
@@ -36,7 +36,7 @@ const MovieItem = (props) => {
                 marginLeft: 24,
                 marginRight: 24,
                 flexDirection: 'row',
-                backgroundColor: index == 0 ? '#007CFF' : '#1B1C2A',
+                backgroundColor: index == 0 && trending == true ? '#007CFF' : '#1B1C2A',
                 borderRadius: 15,
               }}>
               <Image source={{uri: uri}} style={{width: 118, height: 168}} />
@@ -47,7 +47,7 @@ const MovieItem = (props) => {
                   marginTop: 16,
                   width: '50%',
                 }}>
-                {index == 0 ? (
+                {(index == 0 && trending == true) ? (
                   <View style={{flexDirection: 'row'}}>
                     <Top source={top} />
                     <Text

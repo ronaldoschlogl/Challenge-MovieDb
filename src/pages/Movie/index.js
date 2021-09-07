@@ -30,7 +30,13 @@ const Movie = ({route: {params}}) => {
 
   const id = params.id;
   const index = params.index;
-  const list = params.list;
+  let list = params.list;
+
+  const deleteItemById = () =>{
+    const filteredList = list.filter(item => item.id !== id);
+    list = filteredList;
+    return list;
+  }
 
   const [movieData, setMovieData] = useState(undefined);
 
@@ -44,6 +50,7 @@ const Movie = ({route: {params}}) => {
     getMovieData().then(response => {
       setMovieData(response.data);
     });
+    deleteItemById();
   }, []);
 
   const renderAverage = () => {
@@ -175,7 +182,7 @@ const Movie = ({route: {params}}) => {
           <FlatList
             data={list}
             ListHeaderComponent={() => renderMovieDetails()}
-            ListFooterComponent={<MovieList list={list} />}
+            ListFooterComponent={<MovieList list={deleteItemById()} trending={false}/>}
           />
         </LinearGradient>
       </ImageBackground>

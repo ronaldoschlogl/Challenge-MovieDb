@@ -15,7 +15,7 @@ const Home = () => {
 
   const [search, setSearch] = useState(false);
   const [text, onChangeText] = useState();
-
+  const trend = true;
   const triggerSearch = () => {
     if(search == false)
       setSearch(true);
@@ -75,7 +75,7 @@ const Home = () => {
   }
 
   const renderList = () => {
-    return (<MovieList list={listTrending}/>)
+    return (<MovieList list={listTrending} trending={trend}/>)
   }
 
   useEffect(() => {
