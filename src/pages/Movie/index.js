@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
   SafeAreaView,
   ScrollView,
-  FlatList
+  FlatList,
 } from 'react-native';
 
 import {Styles, Container, Top} from './styles';
@@ -53,15 +53,31 @@ const Movie = ({route: {params}}) => {
     }
   };
 
+  const renderHeader = () => {
+    return (
+      <View>
+        <Text style={Styles.TextTop}>Top Movie of the week</Text>
+        <View style={Styles.view}>
+          <Top source={top} style={Styles.icon} />
+          <Text style={Styles.titleTextIcon}>{renderTitle()}</Text>
+        </View>
+      </View>
+    );
+  };
+
   const renderStars = () => {
     if (movieData) {
       let star = Math.floor(movieData.vote_average / 2);
       let iconStar = [];
       for (let i = 0; i < 5; i++) {
         if (star > i)
-          iconStar.push(<Icon name="star" style={{color: '#FFB825', marginLeft: 4}}></Icon>);
+          iconStar.push(
+            <Icon name="star" style={{color: '#FFB825', marginLeft: 4}}></Icon>,
+          );
         else {
-          iconStar.push(<Icon name="star" style={{color: '#fff', marginLeft: 4}}></Icon>);
+          iconStar.push(
+            <Icon name="star" style={{color: '#fff', marginLeft: 4}}></Icon>,
+          );
         }
       }
       return iconStar;
@@ -74,11 +90,11 @@ const Movie = ({route: {params}}) => {
       return release_year;
     }
   };
-  const renderOverview = () =>{
-    if(movieData){
+  const renderOverview = () => {
+    if (movieData) {
       return movieData.overview;
     }
-  }
+  };
 
   const renderPoster = () => {
     if (movieData) {
@@ -105,39 +121,32 @@ const Movie = ({route: {params}}) => {
   const renderMovieDetails = () => {
     return (
       <>
-      {index == 0 ? (
-        <View>
-          <Text style={Styles.TextTop}>Top Movie of the week</Text>
-          <View style={Styles.view}>
-            <Top source={top} style={Styles.icon} />
-            <Text style={Styles.titleTextIcon}>{renderTitle()}</Text>
+        {index == 0 ? (
+         renderHeader()
+        ) : (
+          <View style={Styles.TextTop}>
+            <Text style={Styles.titleTextNoIcon}>{renderTitle()}</Text>
           </View>
-        </View>
-      ) : (
-        <View style={Styles.TextTop}>
-          <Text style={Styles.titleTextNoIcon}>{renderTitle()}</Text>
-        </View>
-      )}
-      {movieData ? (
-        <>
-          <Text style={Styles.TextOverView}>
-            {renderReleaseDate()} • {renderGender()} • {renderRuntime()}
-          </Text>
-          <Text style={Styles.TextOverView}>{renderOverview()}</Text>
+        )}
+        {movieData ? (
+          <>
+            <Text style={Styles.TextOverView}>
+              {renderReleaseDate()} • {renderGender()} • {renderRuntime()}
+            </Text>
+            <Text style={Styles.TextOverView}>{renderOverview()}</Text>
 
-          <View style={Styles.Vote}>
-            <View style={Styles.IconsStar}>{renderStars()}</View>
-            <Text style={Styles.Rate}>{renderAverage()}/5</Text>
-          </View>
-          <Text style={Styles.titleTextNoIcon}>Also trending</Text>
-        </>
-      ) : (
-        <ActivityIndicator size="large" color="#007CFF" />
-      )}
+            <View style={Styles.Vote}>
+              <View style={Styles.IconsStar}>{renderStars()}</View>
+              <Text style={Styles.Rate}>{renderAverage()}/5</Text>
+            </View>
+            <Text style={Styles.titleTextNoIcon}>Also trending</Text>
+          </>
+        ) : (
+          <ActivityIndicator size="large" color="#007CFF" />
+        )}
       </>
-    )
-    
-  }
+    );
+  };
 
   const renderGender = () => {
     if (movieData) {
@@ -166,7 +175,8 @@ const Movie = ({route: {params}}) => {
           <FlatList
             data={list}
             ListHeaderComponent={() => renderMovieDetails()}
-            ListFooterComponent={<MovieList list={list} />} />
+            ListFooterComponent={<MovieList list={list} />}
+          />
         </LinearGradient>
       </ImageBackground>
     </SafeAreaView>

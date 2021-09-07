@@ -17,3 +17,7 @@ export const getGenres = () => {
     return api.get(url);
 }
 
+export const getSearch = (query) => {
+    const url = `search/company?${apiKey}&query=${query}`;
+    return api.get(url);
+}

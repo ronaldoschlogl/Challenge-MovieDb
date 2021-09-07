@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View, StyleSheet, FlatList, ActivityIndicator,} from 'react-native';
-import {Container, TitleStyle} from './styles';
+import {Text, View, StyleSheet, FlatList, ActivityIndicator, TextInput} from 'react-native';
+import {Container, Styles} from './styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import api from '../../services/api';
-import { getTrending, getGenres } from '../../services/movieApi';
+import { getTrending, getGenres, getSearch } from '../../services/movieApi';
 import MovieList from './TrendingMovies/MovieList';
 
 const Home = () => {
@@ -12,6 +12,23 @@ const Home = () => {
   const [listTrending, setListTrending] = useState([]);
   const [completMovieList, setCompleteMovieList] = useState([]);
   const [genreList, setGenreList] = useState([]);
+
+  const [search, setSearch] = useState(false);
+  const [text, onChangeText] = useState();
+
+  const triggerSearch = () => {
+    if(search == false)
+      setSearch(true);
+    else if(search == true)
+      setSearch(false);
+  }
+
+  const getMovieSearch = async () => {
+    if(text){
+      const response = await getSearch(text);
+    }
+    
+  }
 
   const getFilmsTrending = async () => {
     const response = await getTrending(1);
@@ -30,6 +47,37 @@ const Home = () => {
     }
   }
 
+
+  const renderHeader = () => {  
+      return (
+       <View
+        style={Styles.HeaderView}>
+        <Text style={Styles.titleText}>{title}</Text>
+        <Icon.Button name="search" backgroundColor="transparent" onPress={() => triggerSearch()}></Icon.Button>
+      </View>
+    );
+  };
+  const renderSearch = () => {
+    return (
+      <>
+      <View style={Styles.HeaderView}>
+      <Text style={Styles.titleText}>Search</Text>
+      <Icon.Button name="times" backgroundColor="transparent" onPress={() => triggerSearch()}></Icon.Button>
+      </View>
+      <TextInput
+        style={Styles.Input}
+        onChangeText={onChangeText}
+        value={text}
+        inlineImageLeft='search_icon'
+      />
+      </>
+    )
+  }
+
+  const renderList = () => {
+    return (<MovieList list={listTrending}/>)
+  }
+
   useEffect(() => {
     getFilmsTrending();
     getFilmsGenres();
@@ -44,21 +92,15 @@ const Home = () => {
       trend["genres"] = genres.join(" / ");
     });
   }, [listTrending])
-
+  
+  useEffect(() => {
+    getMovieSearch();
+  })
+  
   return (
     <Container>
-      <View
-        style={{
-          marginTop: 48,
-          marginBottom: 24,
-          marginRight: 20,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-        }}>
-        <Text style={TitleStyle.titleText}>{title}</Text>
-        <Icon.Button name="search" backgroundColor="transparent"></Icon.Button>
-      </View>
-      {listTrending ? <MovieList list={listTrending}/> : <ActivityIndicator size="large" color="#007CFF" />}
+      {search == false ? renderHeader() : renderSearch()}
+      {listTrending ? renderList() : <ActivityIndicator size="large" color="#007CFF" />}
       
     </Container>
   );
